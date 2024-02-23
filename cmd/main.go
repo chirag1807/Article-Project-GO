@@ -22,6 +22,9 @@ func main() {
 
 	r := route.UsersRoutes(conn, rdb, amqp)
 
+	// utils.SendSMS("+919327963104", "Hey Chirag, This is Testing Purpose SMS From ZURU TECH.")
+	// utils.MakeVoiceVall("+919327963104", "http://demo.twilio.com/docs/voice.xml")
+
 	log.Println("Server started on port no. " + constants.PORT_NO)
 	log.Fatal(http.ListenAndServe(constants.PORT_NO, r))
 }

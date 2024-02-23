@@ -11,7 +11,6 @@ import (
 )
 
 func DBConnection() (conn *pgx.Conn, rdb *redis.Client, amqpConn *amqp.Connection, err error) {
-	fmt.Println(config.Config.Database.Username, config.Config.ABCD)
 	DATABASE_URL := "postgresql://" + config.Config.Database.Username + ":" + config.Config.Database.Password + "@127.0.0.1:" + config.Config.Database.Port + "/" + config.Config.Database.Name + "?sslmode=" + config.Config.Database.SSLMode
 	connConfig, err := pgx.ParseConfig(DATABASE_URL)
 	if err != nil {

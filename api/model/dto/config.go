@@ -1,7 +1,6 @@
 package dto
 
 type Config struct {
-	ABCD string `mapstructure:"ABC"`
 	Database  Database `mapstructure:",squash"`
 	Redis Redis `mapstructure:",squash"`
 	RabbitMQ RabbitMQ `mapstructure:",squash"`
@@ -39,6 +38,7 @@ type SMTP struct {
 type Twillio struct {
 	AccountSID string `mapstructure:"TWILIO_ACCOUNT_SID"`
 	AuthToken string `mapstructure:"TWILIO_AUTH_TOKEN"`
+	FromMobileNo string `mapstructure:"TWILIO_FROM_MOBILE_NO"`
 }
 
 type JWTSecret struct {
