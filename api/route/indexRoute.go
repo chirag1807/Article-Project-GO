@@ -7,18 +7,20 @@ import (
 	"articleproject/api/service"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-redis/redis/v8"
 	"github.com/jackc/pgx/v5"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-func UsersRoutes(conn *pgx.Conn) (*chi.Mux) {
+func UsersRoutes(conn *pgx.Conn, rdb *redis.Client, amqp *amqp.Connection) (*chi.Mux) {
 	r := chi.NewRouter()
 
-	authRepository := repository.NewAuthRepo(conn)
+	authRepository := repository.NewAuthRepo(conn, rdb, amqp)
 	authService := service.NewAuthService(authRepository)
 	authController := controller.NewAuthController(authService)
 
-	topicRepostiry := repository.NewTopicRepo(conn)
-	topicService := service.NewTopicService(topicRepostiry)
+	topicRepository := repository.NewTopicRepo(conn)
+	topicService := service.NewTopicService(topicRepository)
 	topicController := controller.NewTopicController(topicService)
 
 	articleRepository := repository.NewArticleRepo(conn)

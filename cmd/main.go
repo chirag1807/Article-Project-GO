@@ -6,23 +6,22 @@ import (
 	"articleproject/constants"
 	"articleproject/db"
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 )
 
 func main() {
 	config.LoadEnv()
-	fmt.Println(config.DatabaseConfig.DATABASE_NAME, config.JWtSecretConfig.SecretKey)
-	conn, err := db.DBConnection()
-
+	conn, rdb, amqp, err := db.DBConnection()
 	if err != nil {
+		log.Println(err)
 		return
 	}
 	defer conn.Close(context.Background())
+	defer amqp.Close()
 
-	r := route.UsersRoutes(conn)
+	r := route.UsersRoutes(conn, rdb, amqp)
 
-	fmt.Println("Server started on port no. " + constants.PORT_NO)
+	log.Println("Server started on port no. " + constants.PORT_NO)
 	log.Fatal(http.ListenAndServe(constants.PORT_NO, r))
 }

@@ -10,12 +10,13 @@ import (
 	"github.com/spf13/viper"
 )
 
-var DatabaseConfig dto.Database
+var Config dto.Config
 var JWtSecretConfig dto.JWTSecret
 
 func LoadEnv() {
 	// godotenv.Load("D:/Article Project New/.config/.env")
 
+	viper.AutomaticEnv()
 	viper.SetConfigType("env")
 	viper.SetConfigName(".env")
 	viper.AddConfigPath("../.config/")
@@ -24,7 +25,9 @@ func LoadEnv() {
 		fmt.Println(err)
 	}
 
-	if err := viper.Unmarshal(&DatabaseConfig); err != nil {
+	viper.BindEnv("Config.Database.Username", "DATABASE_USERNAME")
+
+	if err := viper.Unmarshal(&Config); err != nil {
 		fmt.Println("Error While Decoding .env File")
 	}
 
@@ -41,5 +44,3 @@ func LoadEnv() {
 	}
 
 }
-
-//

@@ -3,16 +3,20 @@ package repository
 import (
 	"articleproject/api/model/request"
 	"articleproject/api/model/response"
+	"articleproject/api/redis_internal"
 	"articleproject/constants"
 	"articleproject/error"
 	"articleproject/utils"
+	rabbitmq_user "articleproject/utils/rabbitmq/user"
 	"context"
 	"database/sql"
 	"fmt"
 	"time"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 type AuthRepository interface {
@@ -23,16 +27,21 @@ type AuthRepository interface {
 
 type authRepository struct {
 	pgx *pgx.Conn
+	rdb *redis.Client
+	amqp *amqp.Connection
 }
 
-func NewAuthRepo(pgx *pgx.Conn) AuthRepository {
+func NewAuthRepo(pgx *pgx.Conn, rdb *redis.Client, amqp *amqp.Connection) AuthRepository {
 	return authRepository{
 		pgx: pgx,
+		rdb: rdb,
+		amqp: amqp,
 	}
 }
 
 func (a authRepository) UserRegistration(user request.User) error {
-	_, err := a.pgx.Exec(context.Background(), `INSERT INTO users (name, bio, email, password, isadmin) VALUES ($1, $2, $3, $4, $5)`, user.Name, user.Bio, user.Email, user.Password, user.IsAdmin)
+	var userID int64
+	err := a.pgx.QueryRow(context.Background(), `INSERT INTO users (name, bio, email, password, isadmin) VALUES ($1, $2, $3, $4, $5) RETURNING id`, user.Name, user.Bio, user.Email, user.Password, user.IsAdmin).Scan(&userID)
 	if err != nil {
 		pgErr, ok := err.(*pgconn.PgError)
         if ok && pgErr.Code == "23505" { 
@@ -41,6 +50,8 @@ func (a authRepository) UserRegistration(user request.User) error {
         }
 		return errorhandling.RegistrationFailedError
 	}
+	redis_internal.SaveUser(user, userID, a.rdb)
+	rabbitmq_user.ProduceUserMail(a.amqp, user)
 	return nil
 }
 
