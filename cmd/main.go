@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	config.LoadEnv()
+	config.LoadEnv("../.config/")
 	conn, rdb, amqp, err := db.DBConnection()
 	if err != nil {
 		log.Println(err)

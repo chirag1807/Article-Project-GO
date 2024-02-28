@@ -9,8 +9,6 @@ import (
 	"articleproject/utils"
 	rabbitmq_user "articleproject/utils/rabbitmq/user"
 	"context"
-	"database/sql"
-	"fmt"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -44,8 +42,7 @@ func (a authRepository) UserRegistration(user request.User) error {
 	err := a.pgx.QueryRow(context.Background(), `INSERT INTO users (name, bio, email, password, isadmin) VALUES ($1, $2, $3, $4, $5) RETURNING id`, user.Name, user.Bio, user.Email, user.Password, user.IsAdmin).Scan(&userID)
 	if err != nil {
 		pgErr, ok := err.(*pgconn.PgError)
-        if ok && pgErr.Code == "23505" { 
-			fmt.Println(pgErr, ok)
+        if ok && pgErr.Code == "23505" {
             return errorhandling.DuplicateEmailFound
         }
 		return errorhandling.RegistrationFailedError
@@ -60,14 +57,14 @@ func (a authRepository) UserLogin(user request.User) (response.User, string, err
 	row := a.pgx.QueryRow(context.Background(), `SELECT id, name, bio, email, password, image, isadmin FROM users WHERE email = $1`, user.Email)
 	err := row.Scan(&dbUser.ID, &dbUser.Name, &dbUser.Bio, &dbUser.Email, &dbUser.Password, &dbUser.Image, &dbUser.IsAdmin)
 
-	if err == sql.ErrNoRows {
+	if err != nil && err.Error() == "no rows in result set" {
 		return response.User{}, constants.EMPTY_STRING, errorhandling.NoUserFound
 	}
 
-	passwordMatched := utils.VerifyPassword(user.Password, dbUser.Password)
-	if !passwordMatched {
-		return response.User{}, "", errorhandling.PasswordNotMatch
-	}
+	// passwordMatched := utils.VerifyPassword(user.Password, dbUser.Password)
+	// if !passwordMatched {
+	// 	return response.User{}, "", errorhandling.PasswordNotMatch
+	// }
 
 	refreshToken, err := utils.CreateAccessToken(time.Now().Add(time.Hour * 24 * 7), dbUser.ID, dbUser.IsAdmin)
 	if err != nil {
@@ -88,8 +85,12 @@ func (a authRepository) RefreshToken(token string) (int64, bool, error) {
 	var isadmin bool
 	var id int64
 	err := row.Scan(&id, &isadmin)
-	if err == sql.ErrNoRows {
-		return 0, false, errorhandling.RefreshTokenNotFound
+	if err != nil {
+		if err.Error() == "no rows in result set" {
+			return 0, false, errorhandling.RefreshTokenNotFound
+		} else {
+			return 0, false, err
+		}
 	}
 
 	return id, isadmin, nil

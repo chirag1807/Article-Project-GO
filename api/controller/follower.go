@@ -43,7 +43,6 @@ func (f followerController) Follow(w http.ResponseWriter, r *http.Request) {
 		Message: constants.FOLLOWING_NOW,
 	}
 	utils.ResponseGenerator(w, 200, response)
-	return
 }
 
 func (f followerController) UnFollow(w http.ResponseWriter, r *http.Request) {
@@ -59,7 +58,6 @@ func (f followerController) UnFollow(w http.ResponseWriter, r *http.Request) {
 		Message: constants.NOT_FOLLOWING_NOW,
 	}
 	utils.ResponseGenerator(w, 200, response)
-	return
 }
 
 func (f followerController) MyFollowers(w http.ResponseWriter, r *http.Request) {
@@ -74,7 +72,6 @@ func (f followerController) MyFollowers(w http.ResponseWriter, r *http.Request) 
 		Followers:    followers,
 	}
 	utils.ResponseGenerator(w, 200, response)
-	return
 }
 
 func (f followerController) MyFollowings(w http.ResponseWriter, r *http.Request) {
@@ -89,7 +86,6 @@ func (f followerController) MyFollowings(w http.ResponseWriter, r *http.Request)
 		Followings: followings,
 	}
 	utils.ResponseGenerator(w, 200, response)
-	return
 }
 
 func (f followerController) SomeoneFollowers(w http.ResponseWriter, r *http.Request) {
@@ -105,7 +101,6 @@ func (f followerController) SomeoneFollowers(w http.ResponseWriter, r *http.Requ
 		Followers:    followers,
 	}
 	utils.ResponseGenerator(w, 200, response)
-	return
 }
 
 func (f followerController) SomeoneFollowings(w http.ResponseWriter, r *http.Request) {
@@ -121,5 +116,4 @@ func (f followerController) SomeoneFollowings(w http.ResponseWriter, r *http.Req
 		Followings: followings,
 	}
 	utils.ResponseGenerator(w, 200, response)
-	return
 }

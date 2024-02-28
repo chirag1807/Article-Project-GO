@@ -72,7 +72,6 @@ func (a authController) UserRegistration(w http.ResponseWriter, r *http.Request)
 		Message: constants.USER_REGISTRATION_SUCCEED,
 	}
 	utils.ResponseGenerator(w, http.StatusOK, response)
-	return
 }
 
 func (a authController) UserLogin(w http.ResponseWriter, r *http.Request) {
@@ -118,7 +117,6 @@ func (a authController) UserLogin(w http.ResponseWriter, r *http.Request) {
 		RefreshToken: refreshToken,
 	}
 	utils.ResponseGenerator(w, http.StatusOK, response)
-	return
 }
 
 func (a authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
@@ -140,5 +138,4 @@ func (a authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		AccessToken: accessToken,
 	}
 	utils.ResponseGenerator(w, http.StatusOK, response)
-	return
 }

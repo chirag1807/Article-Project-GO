@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"articleproject/error"
+	errorhandling "articleproject/error"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -17,16 +17,17 @@ func ErrorGenerator(w http.ResponseWriter, err error) {
 			StatusCode: error.StatusCode,
 			Message:    error.Message,
 		}
-		// w.WriteHeader(error.StatusCode)
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(error.StatusCode)
 
 	} else {
 		response = errorhandling.CustomError{
 			StatusCode: http.StatusInternalServerError,
 			Message:    "Internal Server Error",
 		}
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusInternalServerError)
 	}
-	
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(http.StatusInternalServerError)
+
 	json.NewEncoder(w).Encode(response)
 }

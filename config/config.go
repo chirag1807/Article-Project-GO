@@ -13,13 +13,13 @@ import (
 var Config dto.Config
 var JWtSecretConfig dto.JWTSecret
 
-func LoadEnv() {
+func LoadEnv(envFilePath string) {
 	// godotenv.Load("D:/Article Project New/.config/.env")
 
 	viper.AutomaticEnv()
 	viper.SetConfigType("env")
 	viper.SetConfigName(".env")
-	viper.AddConfigPath("../.config/")
+	viper.AddConfigPath(envFilePath)
 
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Println(err)

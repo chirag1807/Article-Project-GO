@@ -50,7 +50,6 @@ func (t topicController) AddTopic(w http.ResponseWriter, r *http.Request) {
 		Message: constants.TOPIC_ADDED,
 	}
 	utils.ResponseGenerator(w, http.StatusOK, response)
-	return
 }
 
 func (t topicController) GetAllTopics(w http.ResponseWriter, r *http.Request) {
@@ -65,7 +64,6 @@ func (t topicController) GetAllTopics(w http.ResponseWriter, r *http.Request) {
 		Topics: topics,
 	}
 	utils.ResponseGenerator(w, 200, response)
-	return
 }
 
 func (t topicController) UpdateTopic(w http.ResponseWriter, r *http.Request) {
@@ -87,7 +85,6 @@ func (t topicController) UpdateTopic(w http.ResponseWriter, r *http.Request) {
 		Message: constants.TOPIC_UPDATED,
 	}
 	utils.ResponseGenerator(w, 200, response)
-	return
 }
 
 func (t topicController) DeleteTopic(w http.ResponseWriter, r *http.Request) {
@@ -103,5 +100,4 @@ func (t topicController) DeleteTopic(w http.ResponseWriter, r *http.Request) {
 		Message: constants.TOPIC_DELETED,
 	}
 	utils.ResponseGenerator(w, 200, response)
-	return
 }

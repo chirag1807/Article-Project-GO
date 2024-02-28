@@ -8,6 +8,7 @@ import (
 	errorhandling "articleproject/error"
 	"articleproject/utils"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -64,7 +65,6 @@ func (a articleController) AddArticle(w http.ResponseWriter, r *http.Request) {
 		Message: constants.ARTICLE_ADDED,
 	}
 	utils.ResponseGenerator(w, http.StatusOK, response)
-	return
 }
 
 func (a articleController) GetMyArticles(w http.ResponseWriter, r *http.Request) {
@@ -79,7 +79,6 @@ func (a articleController) GetMyArticles(w http.ResponseWriter, r *http.Request)
 		Article: articles,
 	}
 	utils.ResponseGenerator(w, http.StatusOK, response)
-	return
 }
 
 func (a articleController) GetArticleById(w http.ResponseWriter, r *http.Request) {
@@ -97,7 +96,6 @@ func (a articleController) GetArticleById(w http.ResponseWriter, r *http.Request
 		Article: articles,
 	}
 	utils.ResponseGenerator(w, http.StatusOK, response)
-	return
 }
 
 func (a articleController) UpdateArticle(w http.ResponseWriter, r *http.Request) {
@@ -120,11 +118,12 @@ func (a articleController) UpdateArticle(w http.ResponseWriter, r *http.Request)
 		Message: constants.ARTICLE_UPDATED,
 	}
 	utils.ResponseGenerator(w, http.StatusOK, response)
-	return
 }
 
 func (a articleController) DeleteArticle(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.ParseInt(chi.URLParam(r, "ID"), 10, 64)
+	fmt.Println(chi.URLParam(r, "ID"))
+	fmt.Println(id)
 	err := a.articleService.DeleteArticle(id)
 
 	if err != nil {
@@ -136,7 +135,6 @@ func (a articleController) DeleteArticle(w http.ResponseWriter, r *http.Request)
 		Message: constants.ARTICLE_DELETED,
 	}
 	utils.ResponseGenerator(w, 200, response)
-	return
 }
 
 func (a articleController) IncreaseView(w http.ResponseWriter, r *http.Request) {
@@ -152,7 +150,6 @@ func (a articleController) IncreaseView(w http.ResponseWriter, r *http.Request) 
 		Message: constants.ARTICLE_VIEW_INCREASED,
 	}
 	utils.ResponseGenerator(w, 200, response)
-	return
 }
 
 func (a articleController) AddLike(w http.ResponseWriter, r *http.Request) {
@@ -168,7 +165,6 @@ func (a articleController) AddLike(w http.ResponseWriter, r *http.Request) {
 		Message: constants.ARTICLE_LIKE_ADDED,
 	}
 	utils.ResponseGenerator(w, 200, response)
-	return
 }
 
 func (a articleController) RemoveLike(w http.ResponseWriter, r *http.Request) {
@@ -184,5 +180,4 @@ func (a articleController) RemoveLike(w http.ResponseWriter, r *http.Request) {
 		Message: constants.ARTICLE_LIKE_REMOVED,
 	}
 	utils.ResponseGenerator(w, 200, response)
-	return
 }
