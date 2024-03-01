@@ -7,7 +7,7 @@ import (
 )
 
 type TopicService interface {
-	AddTopic(request.Topic) error
+	AddTopic(request.Topic) (int64, error)
 	GetAllTopics() ([]response.Topic, error)
 	UpdateTopic(request.Topic) error
 	DeleteTopic(id int64) error
@@ -23,7 +23,7 @@ func NewTopicService(t repository.TopicRepostiry) TopicService {
 	}
 }
 
-func (t topicService) AddTopic(topic request.Topic) error {
+func (t topicService) AddTopic(topic request.Topic) (int64, error) {
 	return t.topicRepostiry.AddTopic(topic)
 }
 

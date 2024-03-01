@@ -9,7 +9,7 @@ import (
 )
 
 type TopicRepostiry interface {
-	AddTopic(request.Topic) error
+	AddTopic(request.Topic) (int64, error)
 	GetAllTopics() ([]response.Topic, error)
 	UpdateTopic(request.Topic) error
 	DeleteTopic(id int64) error
@@ -25,12 +25,13 @@ func NewTopicRepo(pgx *pgx.Conn) TopicRepostiry {
 	}
 }
 
-func (t topicRepostiry) AddTopic(topic request.Topic) error {
-	_, err := t.pgx.Exec(context.Background(), `INSERT INTO topics (name) VALUES ($1)`, topic.Name)
+func (t topicRepostiry) AddTopic(topic request.Topic) (int64, error) {
+	var id int64
+	err := t.pgx.QueryRow(context.Background(), `INSERT INTO topics (name) VALUES ($1) RETURNING id`, topic.Name).Scan(&id)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+	return id, nil
 }
 
 func (t topicRepostiry) GetAllTopics() ([]response.Topic, error) {

@@ -39,7 +39,7 @@ func (t topicController) AddTopic(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = t.topicService.AddTopic(topic)
+	id, err := t.topicService.AddTopic(topic)
 
 	if err != nil {
 		utils.ErrorGenerator(w, err)
@@ -48,6 +48,7 @@ func (t topicController) AddTopic(w http.ResponseWriter, r *http.Request) {
 
 	response := response.SuccessResponse{
 		Message: constants.TOPIC_ADDED,
+		ID: &id,
 	}
 	utils.ResponseGenerator(w, http.StatusOK, response)
 }

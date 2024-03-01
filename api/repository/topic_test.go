@@ -12,7 +12,7 @@ func TestAddTopic(t *testing.T) {
 	topic := request.Topic{
 		Name: "React-Native",
 	}
-	err := NewTopicRepo(conn).AddTopic(topic)
+	_, err := NewTopicRepo(conn).AddTopic(topic)
 	assert.Equal(t, nil, err)
 }
 
