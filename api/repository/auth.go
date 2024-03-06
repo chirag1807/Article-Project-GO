@@ -61,10 +61,10 @@ func (a authRepository) UserLogin(user request.User) (response.User, string, err
 		return response.User{}, constants.EMPTY_STRING, errorhandling.NoUserFound
 	}
 
-	// passwordMatched := utils.VerifyPassword(user.Password, dbUser.Password)
-	// if !passwordMatched {
-	// 	return response.User{}, "", errorhandling.PasswordNotMatch
-	// }
+	passwordMatched := utils.VerifyPassword(user.Password, dbUser.Password)
+	if !passwordMatched {
+		return response.User{}, "", errorhandling.PasswordNotMatch
+	}
 
 	refreshToken, err := utils.CreateAccessToken(time.Now().Add(time.Hour * 24 * 7), dbUser.ID, dbUser.IsAdmin)
 	if err != nil {

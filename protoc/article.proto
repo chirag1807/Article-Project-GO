@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option go_package = "./";
+
+service GetMyArticles {
+    rpc GetMyArticles (GetMyArticleRequest) returns (ArticleResponse);
+}
+
+message GetMyArticleRequest {
+    int64 ID = 1;
+}
+
+message GetMyArticleResponse {
+    int64 ID = 1;
+    string Title = 2;
+    string Content = 3;
+    optional string Image = 4;
+    int64 Topic = 5;
+    int64 Author = 6;
+    int32 Likes = 7;
+    int32 Views = 8;
+    string PublishedAt = 9;
+}
+
+message ArticleResponse {
+    repeated GetMyArticleResponse Articles = 1;
+}
